@@ -117,15 +117,15 @@ for (const property in Sectionitem) {
     $(".sections").append(`
     <div class="col-12 col-md-4" >
     <div class="card">
-        <img src="${Sectionitem[property]['image']}" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5>${Sectionitem[property]['title']}</h5>
-            <p class="card-text">${Sectionitem[property]['content']}</p>
-            <a href="#" id="${property}" class="btn btn-primary" style="background-color: #14279B;"><i
-                    class="bi bi-arrow-right-circle-fill"></i></a>
+            <img src="${Sectionitem[property]['image']}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5>${Sectionitem[property]['title']}</h5>
+                <p class="card-text">${Sectionitem[property]['content']}</p>
+                <a href="#" id="${property}" class="btn btn-primary" style="background-color: #14279B;"><i
+                        class="bi bi-arrow-right-circle-fill"></i></a>
+            </div>
         </div>
-    </div>
-</div>`);
+    </div>`);
 
     $(` #${property}`).click(function () {
         $(".HomePage").css("display", "none");
@@ -134,26 +134,44 @@ for (const property in Sectionitem) {
         $(".basket").css("display", "none");
 
         Sectionitem[property]['items'].forEach(elem => {
-
             $(".Section-item").append(`
-            <div class="col-12 col-md-3" id="${elem.name}" >
+            <div class="col-12 col-md-3" >
             <div class="card">
                 <img src="${elem.image}" class="card-img" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">${elem.name} </h5>
                     <p class="card-text">${elem.disc} </p>
                     <h6>${elem.price} SAR</h6>
-                    <a onclick= "addToCart(${elem.price})" id="addd"  href="#"  class="btn btn-primary" style="background-color: #14279B;"><i
+                    <a id="${elem.name.replace(/\s/g, '')}" class="btn btn-primary" style="background-color: #14279B;"><i
                             class="bi bi-cart4"></i></a>
                 </div>
             </div>
-        </div>`)
+        </div>`);
+
+            $(`#${elem.name.replace(/\s/g, '')}`).click(function () {
+                const name = `${elem.name}`;
+                const image = `${elem.image}`;
+
+                const Favorite = [{
+                    Favorites: [{
+                        name: name,
+                        image: image,
+                    }, ],
+                }];
+
+                const favoriteUserList = JSON.parse(localStorage.getItem('favoriteUser'));
+                if (favoriteUserList !== null) {
+                    favoriteUserList.push(Favorite);
+                    localStorage.setItem('favoriteUser', JSON.stringify(favoriteUserList));
+                } else {
+                    let newFavorite = [];
+                    newFavorite.push(Favorite)
+                    localStorage.setItem('favoriteUser', JSON.stringify(newFavorite));
+                }
+
+            });
         });
-
     });
-
-
-
 };
 
 //local stoarge for object
@@ -162,8 +180,6 @@ let myobj = JSON.stringify(Sectionitem);
 localStorage.setItem("Sectionitem", myobj);
 
 let myobjdes = JSON.parse(localStorage.getItem("Sectionitem"));
-
-
 
 
 $("#Signin").click(function () {
@@ -185,7 +201,6 @@ $("#Create").click(function () {
 //sign up
 
 $("#Create-Account").click(function () {
-
     let newuser = $("#username").val();
     let newPass = $("#Pass").val();
     let newEmail = $("#Email").val();
@@ -218,39 +233,10 @@ $("#Create-Account").click(function () {
 });
 
 $('#btnSignIn').click(function () {
-    // let newuser = $('#user1').val(); 
-    // let newPass = $('#passw').val(); 
-
-    // const listofUsers = JSON.parse(localStorage.getItem('Data')); 
-
-    // if (newuser !== "" && newPass !== "") {
-    //     listofUsers.forEach(function (user) { 
-    //         if (newuser === user.name && newPass === user.password) {
-    //             alert(`Hello ${user.name}`);
-    //             // $('.sign-in').css('display', 'none'); 
-    //             // $('.HomePage').css('display', 'block');
-    //             //chicking
-    //             // sessionStorage.setItem('UserName', newuser); 
-    //             // const userLogin = sessionStorage.getItem('UserName'); 
-    //             // if (userLogin !== null) { 
-    //             //     // $('.HomePage').css('display', 'block'); 
-    //             //     // $('.sign-in').css('display', 'none'); 
-    //             // } 
-    //         } else { 
-    //             alert("WR");
-    //             $('.HomePage').css('display', 'none'); 
-    //             $('.sign-in').css('display', 'block');
-    //         } 
-    //     }); 
-    // }else{
-    //     alert("Enter Data");
-    // }
-
     let inputUser = $('#user1').val();
     let inputPassword = $('#passw').val();
-
     const usersList = JSON.parse(localStorage.getItem('Data'));
-
+    $('.hidden').css('display', 'none');
     if (inputUser !== "" && inputPassword !== "") {
         usersList.forEach(function (user) {
             if (inputUser === user.name && inputPassword === user.password) {
@@ -261,7 +247,7 @@ $('#btnSignIn').click(function () {
             }
         });
     } else {
-        alert('Fill Data');
+
     }
 
 });
@@ -271,8 +257,6 @@ let arr = [];
 
 function addToCart(id) {
     arr.push(id);
-
-
     localStorage.setItem('dataCart', JSON.stringify(arr));
     let num = JSON.parse(localStorage.getItem('dataCart'));
     $('#cartt').html(num.length);
@@ -285,23 +269,43 @@ $("#bass").click(function () {
     $(".Sectionpage").css("display", "none");
     $(".sign-in").css("display", "none");
     $(".sign-up").css("display", "none");
-    $(".basket").css("display", "bluck");
+    $(".basket").css("display", "block");
+
+    const favoriteUserList = JSON.parse(localStorage.getItem('favoriteUser'));
+
+    favoriteUserList.forEach(element => {
+        for (const key in element) {
+            for (const item in element[key]['Favorites']) {
+                $('#cartdata').append(
+                    `<div class="col-12 col-md-3">
+                        <div class="card">
+                            <img src="${element[key]['Favorites'][item]['image']}" class="card-img-top" alt="..." height:"170px">
+                            <div class="card-body">
+                                <h5 class="card-title">${element[key]['Favorites'][item]['name']}</h5>
+                            </div>
+                        </div>
+                    </div>`);
+            }
+        }
+    });
 });
 
 // take the items to cart
-const cartUser = JSON.parse(localStorage.getItem('cartUser'));
-favoriteUserList.forEach(element => {
-    for (const key in element) {
-        for (const item in element[key]['Favorites']) {
-            $('.row-cols-1').append(
-                `<div class="col-12 col-md-3">
-                    <div class="card">
-                        <img src="${element[key]['Favorites'][item]['image']}" class="card-img-top" alt="..." height:"170px">
-                        <div class="card-body">
-                            <h5 class="card-title">${element[key]['Favorites'][item]['name']}</h5>
+$("#addd").click(function () {
+    const cartUser = JSON.parse(localStorage.getItem('cartUser1'));
+    cartUser.forEach(element => {
+        for (const key in element) {
+            for (const item in element[key]['Favorites']) {
+                $('#cartdata').append(
+                    `<div class="col-12 col-md-3">
+                        <div class="card">
+                            <img src="${element[key]['Favorites'][item]['image']}" class="card-img-top" alt="..." height:"170px">
+                            <div class="card-body">
+                                <h5 class="card-title">${element[key]['Favorites'][item]['name']}</h5>
+                            </div>
                         </div>
-                    </div>
-                    </div>`);
+                        </div>`);
+            }
         }
-    }
+    });
 });
