@@ -151,11 +151,16 @@ for (const property in Sectionitem) {
             $(`#${elem.name.replace(/\s/g, '')}`).click(function () {
                 const name = `${elem.name}`;
                 const image = `${elem.image}`;
+                const disc = `${elem.disc}`;
+                const price =`${elem.price}`;
+
 
                 const Favorite = [{
                     Favorites: [{
                         name: name,
                         image: image,
+                        disc: disc,
+                        price: price,
                     }, ],
                 }];
 
@@ -253,16 +258,6 @@ $('#btnSignIn').click(function () {
 });
 
 // cart 
-let arr = [];
-
-function addToCart(id) {
-    arr.push(id);
-    localStorage.setItem('dataCart', JSON.stringify(arr));
-    let num = JSON.parse(localStorage.getItem('dataCart'));
-    $('#cartt').html(num.length);
-
-};
-
 
 $("#bass").click(function () {
     $(".HomePage").css("display", "none");
@@ -282,6 +277,8 @@ $("#bass").click(function () {
                             <img src="${element[key]['Favorites'][item]['image']}" class="card-img-top" alt="..." height:"170px">
                             <div class="card-body">
                                 <h5 class="card-title">${element[key]['Favorites'][item]['name']}</h5>
+                                <p class="card-text">${element[key]['Favorites'][item]['disc']} </p>
+                                <h6>${element[key]['Favorites'][item]['price']} SAR </h6>
                             </div>
                         </div>
                     </div>`);
@@ -293,6 +290,7 @@ $("#bass").click(function () {
 // take the items to cart
 $("#addd").click(function () {
     const cartUser = JSON.parse(localStorage.getItem('cartUser1'));
+    let total=0;
     cartUser.forEach(element => {
         for (const key in element) {
             for (const item in element[key]['Favorites']) {
@@ -302,10 +300,25 @@ $("#addd").click(function () {
                             <img src="${element[key]['Favorites'][item]['image']}" class="card-img-top" alt="..." height:"170px">
                             <div class="card-body">
                                 <h5 class="card-title">${element[key]['Favorites'][item]['name']}</h5>
+                                <p class="card-text">${element[key]['Favorites'][item]['disc']} </p>
+                                <h6>${element[key]['Favorites'][item]['price']} SAR</h6>
                             </div>
                         </div>
                         </div>`);
             }
         }
+       /////////// total+= element[key]['Favorites'][item]['price'];
+
     });
-});
+   ////////////// $(".total").html(`<div> ${total} </div>`)
+   
+
+    });
+    
+
+
+
+
+
+
+
