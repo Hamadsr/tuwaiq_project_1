@@ -7,7 +7,7 @@
 ## Uses:
 
 1- HMTL:
-- I used html to build and design the website according to my idea.
+- I used html to build the website according to my idea.
 
 2- CSS:
  - To modify my design in terms of fonts and colors.
